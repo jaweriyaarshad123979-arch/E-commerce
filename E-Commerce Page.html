@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Page</title>
+</head>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+
+.logo { font-size: 24px; font-weight: bold; color: #38bdf8; }
+.cart-icon { background: #334155; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+
+.container {
+    display: flex;
+    padding: 40px 8%;
+    gap: 30px;
+}
+
+.filters {
+    width: 250px;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    height: fit-content;
+}
+
+.filters h3 { margin-bottom: 15px; }
+.filter-group input { width: 100%; margin-top: 10px; cursor: pointer; }
+
+main { flex: 1; }
+main h2 { margin-bottom: 20px; }
+
+/* CSS Grid Layout */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.product-card {
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #334155;
+    transition: 0.3s;
+}
+
+.product-card:hover { border-color: #38bdf8; }
+
+.product-img {
+    height: 150px;
+    background: #0f172a;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.product-card h4 { margin-bottom: 10px; font-size: 18px; }
+.price { color: #38bdf8; font-weight: bold; margin-bottom: 15px; }
+
+.add-btn {
+    background: #38bdf8;
+    color: #0f172a;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.add-btn:hover { background: #0ea5e9; }
+</style>
+<body>
+    <!-- Navbar / Header -->
+    <header>
+        <div class="logo">ShopHub</div>
+        <div class="cart-icon">
+            🛒 Cart (<span id="cart-count">0</span>)
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Sidebar Filters -->
+        <aside class="filters">
+            <h3>Filter by Price</h3>
+            <div class="filter-group">
+                <label for="priceRange">Max Price: $<span id="priceValue">100</span></label>
+                <input type="range" id="priceRange" min="20" max="100" value="100">
+            </div>
+        </aside>
+
+        <!-- Product Grid Dashboard -->
+        <main>
+            <h2>Our Products</h2>
+            <div class="product-grid" id="productGrid">
+                <!-- Products will dynamically generate via JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Dummy Product Data
+const products = [
+    { id: 1, name: "Wireless Headphones", price: 50, icon: "🎧" },
+    { id: 2, name: "Smart Watch", price: 99, icon: "⌚" },
+    { id: 3, name: "Gaming Mouse", price: 35, icon: "🖱️" },
+    { id: 4, name: "Mechanical Keyboard", price: 80, icon: "⌨️" },
+    { id: 5, name: "Leather Wallet", price: 25, icon: "💼" }
+];
+
+let cartCount = 0;
+const productGrid = document.getElementById('productGrid');
+const priceRange = document.getElementById('priceRange');
+const priceValue = document.getElementById('priceValue');
+const cartCountSpan = document.getElementById('cart-count');
+
+// Display Products Dynamic Function
+function displayProducts(maxPrice) {
+    productGrid.innerHTML = "";
+    
+    const filtered = products.filter(p => p.price <= maxPrice);
+    
+    if(filtered.length === 0) {
+        productGrid.innerHTML = "<p>No products found in this range.</p>";
+        return;
+    }
+
+    filtered.forEach(product => {
+        const card = document.createElement('div');
+        card.classList.add('product-card');
+        card.innerHTML = `
+            <div class="product-img">${product.icon}</div>
+            <h4>${product.name}</h4>
+            <p class="price">$${product.price}</p>
+            <button class="add-btn" onclick="addToCart()">Add to Cart</button>
+        `;
+        productGrid.appendChild(card);
+    });
+}
+
+// Add to Cart Action
+function addToCart() {
+    cartCount++;
+    cartCountSpan.innerText = cartCount;
+}
+
+// Filter Control Listener
+priceRange.addEventListener('input', (e) => {
+    const currentPrice = e.target.value;
+    priceValue.innerText = currentPrice;
+    displayProducts(currentPrice);
+});
+
+// Initial Render
+displayProducts(100);
+    </script>
+</body>
+</html>
